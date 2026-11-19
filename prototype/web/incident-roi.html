@@ -1,0 +1,10 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/incident-investigations.css"><title>企业ROI与合作平台单位经济</title></head><body>
+<h1>企业ROI与合作平台单位经济</h1><nav><a href="/incidents">登录 / 工作流</a> <a href="/coverage">保障登记</a> <button id="logout">退出</button></nav><p id="status" role="status"></p>
+<p>比较同月、同质量、同合格产出数量的三种情景。企业场景金额填企业最终承担部分，付款方单独记录；金额填最小货币单位整数，未知留空，已知为零才填0；收入与成本的实际/估计和资料来源逐项记录。不自动兑换币种，不把全部AI节省归因于保障，不把拟议赔款当作必然回款。</p>
+<form id="load"><label>项目 <input id="project" required></label><label>工作流 <input id="workflow" required></label><label>期间 <input id="period" type="month" required></label><button>读取期间台账</button></form>
+<p>只有企业管理员可保存新版本。先读取期间；旧版本不覆盖。实际已知金额必须引用本工作流已导入原件，但这不证明实际支付或收入到账。</p>
+<button id="add-currency" type="button">增加币种分栏</button><form id="save"><div id="editor"></div><button>保存新版本并核算</button></form>
+<h2>三场景与平台结果</h2><p>ROI＝期间净节省÷AI场景期间成本；零分母显示未知。盈亏平衡按当前客户平均贡献计算，非正贡献不推算。一次性项目的现金只在分摊第1期计入；分摊期序及来源由录入者声明，系统不自动核对跨期会计账。</p><div id="results"></div>
+<h2>历史登记</h2><pre id="history"></pre><p>合作平台仅计合同已确认的技术收入，未确认合同会阻止利润结论。承保方保费单列；旧自营承保研究模型没有迁移或与此模型合并。这里不提供正式报价、承保决定或自动付款。</p>
+<script src="/incident-roi.js" defer></script></body></html>
+

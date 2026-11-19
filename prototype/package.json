@@ -1,0 +1,59 @@
+{
+  "name": "fde-insurance-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.19.0"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "bootstrap:incidents": "tsx scripts/bootstrap-incidents.ts",
+    "serve:incidents": "tsx scripts/serve-incidents.ts",
+    "test:incidents": "tsx --test tests/incident-*.test.ts",
+    "import:incidents": "tsx scripts/import-incidents.ts",
+    "scenario:coding": "tsx scripts/scenario-coding-experiment.ts",
+    "check:env": "tsx scripts/check-env.ts",
+    "test:domain": "tsx scripts/test-group.ts domain",
+    "test:contracts": "tsx scripts/test-group.ts contracts",
+    "test:integration": "tsx scripts/test-group.ts integration",
+    "chain:local": "hardhat node --hostname 127.0.0.1",
+    "deploy:local": "tsx scripts/deploy-local.ts",
+    "scenario:isolated": "tsx scripts/run-isolated-auto.ts",
+    "cold:run": "pwsh -NoProfile -File scripts/cold-run.ps1",
+    "export:run": "tsx scripts/export-run.ts",
+    "check": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "compile": "hardhat compile",
+    "probe": "tsx scripts/probe.ts",
+    "node": "hardhat node --hostname 127.0.0.1",
+    "generate": "tsx scripts/generate-types.ts",
+    "export:abi": "tsx scripts/export-abi.ts",
+    "scenario:manual": "tsx scripts/scenario-manual.ts",
+    "scenario:recovery": "tsx scripts/scenario-recovery.ts",
+    "verify": "pnpm generate && pnpm check && pnpm compile && pnpm export:abi && pnpm test && pnpm probe && pnpm scenario:manual && pnpm scenario:recovery",
+    "bootstrap:service": "tsx scripts/bootstrap-service.ts",
+    "serve": "tsx scripts/serve.ts",
+    "serve:auto": "tsx scripts/serve-auto.ts",
+    "govern:recovery": "tsx scripts/govern-recovery.ts",
+    "scenario:l1": "tsx scripts/scenario-auto.ts",
+    "test:m2b": "tsx --test tests/m2b.test.ts tests/budget.test.ts tests/authorization-safety.test.ts",
+    "acceptance:audit": "tsx scripts/acceptance-audit.ts",
+    "scenario:l2": "tsx scripts/scenario-auto.ts --l2 --stub",
+    "scenario:supplement": "tsx scripts/scenario-auto.ts --supplement --stub",
+    "eval:l2": "tsx scripts/evaluation-l2.ts"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "decimal.js": "10.6.0",
+    "hardhat": "3.20.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "5.6.1",
+    "fastify": "5.12.7",
+    "viem": "2.57.8"
+  }
+}

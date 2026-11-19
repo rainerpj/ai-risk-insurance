@@ -1,0 +1,9 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI编程事故 · 数字员工保险演示</title><link rel="stylesheet" href="style.css"></head><body>
+<header><div><span class="eyebrow">FDE / INSURANCE LAB</span><h1>数字员工的工作，有据可查</h1><p>AI代码开发 → 审查发布 → 模拟链上存证 → 出险报案 → 核损赔付</p></div><span class="badge">产品逻辑 DEMO · USD</span></header>
+<main><section class="toolbar"><div id="industries" role="group" aria-label="行业"><button data-industry="drama">01　AI 短剧</button><button data-industry="support">02　AI 智能客服</button></div><div><button id="save">保存本机</button><button id="export">导出 JSON</button><button id="import">导入 JSON</button><input id="file" type="file" accept="application/json" hidden><button id="reset">重置当前行业</button></div></section>
+<p id="lab-notice" class="notice">历史计算器：所有事故概率、费率和保额均为可调整的合成假设。此工具不出单、不收款、不判断法律责任。切换地区只更改演示标签，不代表当地可售或合规。</p><p id="message" role="status"></p>
+<section class="intro"><div><span class="eyebrow">当前产品</span><h2 id="scenarioTitle"></h2><p id="scope"></p></div><div><span class="eyebrow">出险证据链</span><p id="evidenceText"></p></div></section>
+<nav aria-label="演示模块"><button data-tab="journey" class="selected">AI编程事故完整流程</button><button data-tab="quote">历史报价实验台</button><button data-tab="claim">历史核损计算器</button><button data-tab="method">规则与边界</button></nav>
+<div id="errors" role="alert"></div><div id="workspace"></div>
+<footer>参数变更实时重算 · 客户是主要被保险人和索赔人 · FDE 是交付与合作渠道<br>计算结果以未取整金额运算，界面显示两位小数。仅本地保存或导出，不发送客户数据。</footer></main>
+<script src="engine.js"></script><script src="refund-engine.js"></script><script src="coding-engine.js"></script><script src="coding-ui.js"></script><script src="app.js"></script></body></html>

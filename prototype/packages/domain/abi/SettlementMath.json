@@ -1,0 +1,105 @@
+[
+  {
+    "inputs": [],
+    "name": "AmountMismatch",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "gross",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "duplicate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "compensation",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "recovery",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SettlementMath.Expense[2]",
+        "name": "amounts",
+        "type": "tuple[2]"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "P",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "R",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "otherOccupied",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "incidentLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "annualLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "oldDue",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "claimed",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reviewAmount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct SettlementMath.Limits",
+        "name": "l",
+        "type": "tuple"
+      }
+    ],
+    "name": "calculate",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "approved",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "due",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "refund",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]

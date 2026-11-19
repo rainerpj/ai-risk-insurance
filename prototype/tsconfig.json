@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2023", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "strict": true, "noUncheckedIndexedAccess": true, "skipLibCheck": true,
+    "allowImportingTsExtensions": true, "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["packages/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts", "hardhat.config.ts"]
+}

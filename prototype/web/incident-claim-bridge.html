@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/incident-investigations.css"><title>本地测试币桥接</title></head><body>
+<h1>本地测试币桥接</h1><nav><a href="/incidents">登录 / 事故</a> <a href="/reports">报告复核</a> <a href="/coverage">保障引用</a> <button id="logout">退出</button></nav><p id="status" role="status"></p>
+<p>仅支持本地31337链、MockUSDC、合成原件与local_test保障。登记映射不签署或付款；后续必须进入旧人工工作台，由被保险人报案、独立核损和核赔角色操作。报告复核不等于核赔批准。</p>
+<form id="load"><label>项目 <input id="project" required></label><label>事故编号 <input id="incident" required></label><button>读取已有映射与交易状态</button></form>
+<form id="create"><h2>固定报告与条款绑定</h2><label>报告编号 <input id="reportId" required></label><label>独立复核编号 <input id="reviewId" required></label><label>保障登记版本 <input id="coverageVersion" type="number" min="1" required></label><label>本地保单编号 <input id="policyId" required></label><label>合成事故声明时间（Unix秒） <input id="declaredIncidentAt" inputmode="numeric" required></label><label><input id="confirmSynthetic" type="checkbox" required>确认仅为合成测试，并将这次事故固定到该本地保单、报告与条款版本</label><button>创建 / 恢复同一映射</button></form>
+<h2>映射和人工工作台输入</h2><pre id="result"></pre><p>noticePayload须由已登记的被保险人身份签署；draftInput须由独立核损人确认，并指定独立核赔人。交易只沿原draft/sign/outbox流程。使用启动脚本打印的旧人工工作台地址；本页不会请求钱包密钥。</p><p>原件、费用、保障或复核变化后，停止新签名/入队/广播。已流出的签名和已广播交易无法远程撤回；unknown必须保留原字节及哈希对账，不能重新创建付款或改映射。失效映射的修订需后续人工对账设计，本版不自动重映射。</p>
+<script src="/incident-claim-bridge.js" defer></script></body></html>

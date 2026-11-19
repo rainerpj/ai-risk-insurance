@@ -1,0 +1,27 @@
+import assert from 'node:assert/strict';
+import {spawn,type ChildProcess} from 'node:child_process';
+import {createServer} from 'node:net';
+import {mkdirSync,createWriteStream,writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {randomUUID} from 'node:crypto';
+import {bridgeSource} from '../tests/incident-bridge-fixture.ts';
+import {Store} from '../packages/service/store.ts';
+const runId=randomUUID(),dir=resolve('.local',`incident-n11-http-${runId}`);mkdirSync(dir,{recursive:true});
+async function port(){const server=createServer();await new Promise<void>(r=>server.listen(0,'127.0.0.1',r));const p=(server.address() as any).port;await new Promise<void>(r=>server.close(()=>r()));return p;}
+const rpcPort=await port(),sourcePort=await port(),legacyPort=await port(),rpc=`http://127.0.0.1:${rpcPort}`;assert.ok(new Set([rpcPort,sourcePort,legacyPort]).size===3);process.env.RPC_URL=rpc;process.env.CHAIN_ID='31337';
+function start(args:string[],name:string){const log=createWriteStream(resolve(dir,name+'.log')),child=spawn(process.execPath,args,{env:process.env,windowsHide:true,stdio:['ignore','pipe','pipe']});child.stdout!.pipe(log,{end:false});child.stderr!.pipe(log,{end:false});const done=new Promise<void>((r,j)=>{child.once('exit',()=>r());child.once('error',j);});return {child,done,log};}
+async function stop(run:ReturnType<typeof start>|undefined){if(!run)return;if(run.child.exitCode===null&&run.child.signalCode===null)run.child.kill();await run.done;await new Promise<void>(r=>run.log.end(r));}
+async function ready(check:()=>Promise<boolean>,child:ChildProcess){for(let n=0;n<100;n++){if(child.exitCode!==null||child.signalCode!==null)throw Error('CHILD_EXITED');try{if(await check())return;}catch{}await new Promise(r=>setTimeout(r,100));}throw Error('STARTUP_TIMEOUT');}
+const node=start(['node_modules/hardhat/dist/src/cli.js','node','--hostname','127.0.0.1','--port',String(rpcPort)],'rpc');let server:ReturnType<typeof start>|undefined;
+try{await ready(async()=>{const response=await fetch(rpc,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_chainId',params:[]}),signal:AbortSignal.timeout(500)});return (await response.json() as any).result==='0x7a69';},node.child);
+ const {setup,H,json}=await import('../tests/chain-helper.ts'),keys:Record<string,string>={},c=await setup({network:'localhost',captureKey:(name,key)=>keys[name]=key});
+ let incidentId='',input:any,password='';try{const q=await c.issue({annualLimit:10000000n,incidentLimit:10000000n}),f=await bridgeSource(q);try{incidentId=f.incident.incidentId;input=f.input;password=f.password;f.store.logout(f.token);const db=new Store(resolve(dir,'legacy.sqlite'),`31337:${c.core.address}:${c.salt}`);try{for(const [name,role] of [['insured','insured'],['assessor','ASSESSOR'],['approver','CLAIM_APPROVER']] as const)db.run('INSERT INTO identities(address,tenant,role) VALUES(?,?,?)',c.accounts[name].address.toLowerCase(),H('enterprise'),role);}finally{db.close();}
+ writeFileSync(resolve(dir,'incidents.json'),JSON.stringify({schemaVersion:1,database:f.file,port:sourcePort}));writeFileSync(resolve(dir,'legacy.json'),json({rpc,core:c.core.address,deploymentId:c.salt,database:'legacy.sqlite',startBlock:'0',port:legacyPort,accounts:Object.fromEntries(['insured','assessor','approver'].map(name=>[c.accounts[name as 'insured'].address.toLowerCase(),keys[name]]))}));writeFileSync(resolve(dir,'bridge.json'),JSON.stringify({incidentConfig:'incidents.json',serviceConfig:'legacy.json',targets:[{tenantId:'tenant',projectId:'project',workflowId:f.workflow.workflowId,policyId:q.quoteId}]}));
+ }finally{f.store.close();}}finally{await c.connection.close();}
+ server=start(['--import','tsx','scripts/serve-incident-bridge.ts',resolve(dir,'bridge.json')],'server');const origin=`http://127.0.0.1:${sourcePort}`;await ready(async()=>(await fetch(origin+'/test-claims',{signal:AbortSignal.timeout(500)})).status===200,server.child);
+ assert.equal((await fetch(`http://127.0.0.1:${legacyPort}/`)).status,200);assert.equal((await fetch(origin+'/incident-claim-bridge.js')).status,200);
+ const login=await fetch(origin+'/api/incidents-v1/session',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({actorId:'admin',password})});assert.equal(login.status,200);const token=(await login.json() as any).token,headers={authorization:`Bearer ${token}`,'content-type':'application/json','idempotency-key':'http-map'};
+ const mapped=await fetch(origin+`/api/incidents-v1/incidents/${incidentId}/test-claims`,{method:'POST',headers,body:JSON.stringify(input)});assert.equal(mapped.status,200,await mapped.clone().text());const result=await mapped.json() as any;assert.equal(result.installed,true);assert.equal((await fetch(origin+`/api/incidents-v1/incidents/${incidentId}/test-claims?projectId=project`,{headers})).status,200);await fetch(origin+'/api/incidents-v1/session',{method:'DELETE',headers:{authorization:headers.authorization}});assert.equal((await fetch(origin+`/api/incidents-v1/incidents/${incidentId}/test-claims?projectId=project`,{headers})).status,401);
+ const proof=`reports/incident-n11-http-${runId}.json`;writeFileSync(proof,JSON.stringify({runId,status:'passed',scope:'real loopback RPC and dual-server launcher; mapping only, no payment',bridgeId:result.mapping.bridgeId,installed:true,loggedOutDenied:true,browserTest:false},null,2));console.log(proof);
+}finally{await stop(server);await stop(node);}
+

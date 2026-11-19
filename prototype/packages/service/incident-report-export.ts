@@ -1,0 +1,26 @@
+import { canonicalize } from '../domain/evidence.ts';
+import { byteDigest } from './incident-ingest.ts';
+import { exactObject,requireIncident as need } from '../domain/incident-schema.ts';
+import type { ReportVersion } from './incident-report.ts';
+const digest=(v:unknown)=>byteDigest(canonicalize(JSON.stringify(v)));
+/** Positive projection: no arbitrary statement, quote, identifier, reason or original bytes cross this boundary. */
+export function buildRedactedBundle(report:ReportVersion,review:{reviewId:string;decision:string},exportId:string,createdAt:string){
+ const aliases=new Map<string,string>(),catalogue=report.snapshot.catalogue as {id:string;length:number;digest:string;trust:string}[];
+ const manifest=catalogue.map((d,i)=>{const id=`document-${i+1}`;aliases.set(d.id,id);return {id,length:d.length,sha256:d.digest,kind:d.id.startsWith('original:')?'original':'derived',trust:['synthetic','source_signed','gateway_received','attested','unverified','derived','declaration'].includes(d.trust)?d.trust:'unverified',contentIncluded:false};});
+ const refs=(items:any[])=>items.map(r=>{const target=manifest.find(d=>d.id===aliases.get(r.id));need(target&&Number.isInteger(r.start)&&Number.isInteger(r.end)&&r.start>=0&&r.end>r.start&&r.end<=target.length,'INVALID_EXPORT_REFERENCE',422);return {documentId:target.id,start:r.start,end:r.end,quoteSha256:byteDigest(r.quote)};});
+ const findings=report.snapshot.findings.map((f:any,i:number)=>{need(['fact','hypothesis','conflict','unknown'].includes(f.type),'INVALID_EXPORT_FINDING',422);return {id:`finding-${i+1}`,type:f.type,reviewStatus:'reviewed_as_report',contentWithheld:true,evidenceRefs:refs(f.evidenceRefs),counterEvidenceRefs:refs(f.counterEvidenceRefs)};});
+ const payload={protocol:'INCIDENT-REDACTED-METADATA-v1',exportId,createdAt,reportVersion:report.version,evidenceManifestDigest:report.evidenceManifestDigest,reviewDecision:review.decision,profile:'redacted_metadata_v1',originalsIncluded:false,findings,manifest,gapCount:report.snapshot.gaps.length,limitations:['Free text, identities, paths, original bytes and monetary details are withheld.','Hashes and reference structure are verifiable; source-byte and quotation correctness require separately authorized originals.','Review is not insurance approval or proof of truth. This file cannot be recalled after download.']};
+ return {payload,payloadSha256:digest(payload)};
+}
+/** Offline integrity check. Does not authenticate the signer or establish factual truth. */
+export function verifyRedactedBundle(bundle:unknown){
+ exactObject(bundle,['payload','payloadSha256']);
+ const b=bundle as any;need(b&&b.payload&&typeof b.payloadSha256==='string'&&digest(b.payload)===b.payloadSha256,'EXPORT_DIGEST_MISMATCH',422);
+ const p=b.payload;exactObject(p,['protocol','exportId','createdAt','reportVersion','evidenceManifestDigest','reviewDecision','profile','originalsIncluded','findings','manifest','gapCount','limitations']);need(p.protocol==='INCIDENT-REDACTED-METADATA-v1'&&p.profile==='redacted_metadata_v1'&&p.originalsIncluded===false&&Array.isArray(p.manifest)&&Array.isArray(p.findings),'INVALID_EXPORT',422);
+ need(Number.isSafeInteger(p.reportVersion)&&Number(p.reportVersion)>0&&Number.isSafeInteger(p.gapCount)&&Number(p.gapCount)>=0&&p.reviewDecision==='accepted'&&/^[0-9a-f]{64}$/.test(String(p.evidenceManifestDigest))&&typeof p.exportId==='string'&&/^[0-9a-f-]{36}$/.test(p.exportId)&&typeof p.createdAt==='string'&&Number.isFinite(Date.parse(p.createdAt))&&Array.isArray(p.limitations)&&p.limitations.every((v:unknown)=>typeof v==='string'),'INVALID_EXPORT',422);
+ const map=new Map<string,any>();for(const d of p.manifest){exactObject(d,['id','length','sha256','kind','trust','contentIncluded']);need(/^document-[1-9]\d*$/.test(String(d.id))&&!map.has(String(d.id))&&Number.isSafeInteger(d.length)&&Number(d.length)>=0&&/^[0-9a-f]{64}$/.test(String(d.sha256))&&(typeof d.kind === 'string' && ['original','derived'].includes(d.kind))&&(typeof d.trust === 'string' && ['synthetic','source_signed','gateway_received','attested','unverified','derived','declaration'].includes(d.trust))&&d.contentIncluded===false,'INVALID_EXPORT_MANIFEST',422);map.set(String(d.id),d);}
+ const findingIds=new Set();for(const f of p.findings){need(/^finding-[1-9]\d*$/.test(f.id)&&!findingIds.has(f.id)&&f.reviewStatus==='reviewed_as_report','INVALID_EXPORT_FINDING',422);findingIds.add(f.id);}
+ for(const f of p.findings){exactObject(f,['id','type','reviewStatus','contentWithheld','evidenceRefs','counterEvidenceRefs']);need((typeof f.type === 'string' && ['fact','hypothesis','conflict','unknown'].includes(f.type))&&f.contentWithheld===true&&Array.isArray(f.evidenceRefs)&&f.evidenceRefs.length>0&&Array.isArray(f.counterEvidenceRefs),'INVALID_EXPORT_FINDING',422);for(const r of [...f.evidenceRefs,...f.counterEvidenceRefs]){exactObject(r,['documentId','start','end','quoteSha256']);const d=map.get(String(r.documentId));need(d&&Number.isInteger(r.start)&&Number.isInteger(r.end)&&Number(r.start)>=0&&Number(r.end)>Number(r.start)&&Number(r.end)<=d.length&&/^[0-9a-f]{64}$/.test(String(r.quoteSha256)),'INVALID_EXPORT_REFERENCE',422);}}
+ return {valid:true,originalBytesVerified:false,identityAuthenticated:false,documents:map.size,findings:p.findings.length};
+}
+

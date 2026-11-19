@@ -1,0 +1,314 @@
+{
+  "Quote": [
+    {
+      "name": "quoteId",
+      "type": "bytes32"
+    },
+    {
+      "name": "insured",
+      "type": "address"
+    },
+    {
+      "name": "beneficiary",
+      "type": "address"
+    },
+    {
+      "name": "enterpriseId",
+      "type": "bytes32"
+    },
+    {
+      "name": "fdeId",
+      "type": "bytes32"
+    },
+    {
+      "name": "workflowHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "insurerId",
+      "type": "bytes32"
+    },
+    {
+      "name": "pool",
+      "type": "address"
+    },
+    {
+      "name": "token",
+      "type": "address"
+    },
+    {
+      "name": "productId",
+      "type": "bytes32"
+    },
+    {
+      "name": "productVersion",
+      "type": "uint64"
+    },
+    {
+      "name": "termsHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "riskSnapshotHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "formulaVersion",
+      "type": "bytes32"
+    },
+    {
+      "name": "quoteMode",
+      "type": "uint8"
+    },
+    {
+      "name": "premium",
+      "type": "uint256"
+    },
+    {
+      "name": "annualLimit",
+      "type": "uint256"
+    },
+    {
+      "name": "incidentLimit",
+      "type": "uint256"
+    },
+    {
+      "name": "startAt",
+      "type": "uint64"
+    },
+    {
+      "name": "endAt",
+      "type": "uint64"
+    },
+    {
+      "name": "expiresAt",
+      "type": "uint64"
+    },
+    {
+      "name": "signerEpoch",
+      "type": "uint64"
+    }
+  ],
+  "Assessment": [
+    {
+      "name": "decisionContentHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "assessor",
+      "type": "address"
+    },
+    {
+      "name": "signerEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "expiresAt",
+      "type": "uint64"
+    }
+  ],
+  "SupervisorApproval": [
+    {
+      "name": "decisionDigest",
+      "type": "bytes32"
+    },
+    {
+      "name": "supervisor",
+      "type": "address"
+    },
+    {
+      "name": "signerEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "expiresAt",
+      "type": "uint64"
+    }
+  ],
+  "ClaimDecision": [
+    {
+      "name": "decisionId",
+      "type": "bytes32"
+    },
+    {
+      "name": "policyId",
+      "type": "bytes32"
+    },
+    {
+      "name": "incidentId",
+      "type": "bytes32"
+    },
+    {
+      "name": "noticeSetHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "version",
+      "type": "uint64"
+    },
+    {
+      "name": "previousVersion",
+      "type": "uint64"
+    },
+    {
+      "name": "expectedLedgerHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "assessmentHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "amountsHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "netApproved",
+      "type": "uint256"
+    },
+    {
+      "name": "beneficiary",
+      "type": "address"
+    },
+    {
+      "name": "reasonHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "reviewAmount",
+      "type": "uint256"
+    },
+    {
+      "name": "channel",
+      "type": "uint8"
+    },
+    {
+      "name": "grantId",
+      "type": "bytes32"
+    },
+    {
+      "name": "grantEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "budgetVersion",
+      "type": "uint64"
+    },
+    {
+      "name": "reservationId",
+      "type": "bytes32"
+    },
+    {
+      "name": "approver",
+      "type": "address"
+    },
+    {
+      "name": "signerEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "expiresAt",
+      "type": "uint64"
+    }
+  ],
+  "PaymentAuthorization": [
+    {
+      "name": "paymentId",
+      "type": "bytes32"
+    },
+    {
+      "name": "policyId",
+      "type": "bytes32"
+    },
+    {
+      "name": "incidentId",
+      "type": "bytes32"
+    },
+    {
+      "name": "decisionVersion",
+      "type": "uint64"
+    },
+    {
+      "name": "decisionDigest",
+      "type": "bytes32"
+    },
+    {
+      "name": "token",
+      "type": "address"
+    },
+    {
+      "name": "beneficiary",
+      "type": "address"
+    },
+    {
+      "name": "amount",
+      "type": "uint256"
+    },
+    {
+      "name": "installmentIndex",
+      "type": "uint64"
+    },
+    {
+      "name": "grantId",
+      "type": "bytes32"
+    },
+    {
+      "name": "grantEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "budgetVersion",
+      "type": "uint64"
+    },
+    {
+      "name": "reservationId",
+      "type": "bytes32"
+    },
+    {
+      "name": "supersedesPaymentId",
+      "type": "bytes32"
+    },
+    {
+      "name": "signerEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "expiresAt",
+      "type": "uint64"
+    }
+  ],
+  "NoticeAuthorization": [
+    {
+      "name": "noticeId",
+      "type": "bytes32"
+    },
+    {
+      "name": "policyId",
+      "type": "bytes32"
+    },
+    {
+      "name": "incidentCommitment",
+      "type": "bytes32"
+    },
+    {
+      "name": "evidenceHash",
+      "type": "bytes32"
+    },
+    {
+      "name": "declaredIncidentAt",
+      "type": "uint64"
+    },
+    {
+      "name": "submitter",
+      "type": "address"
+    },
+    {
+      "name": "signerEpoch",
+      "type": "uint64"
+    },
+    {
+      "name": "expiresAt",
+      "type": "uint64"
+    }
+  ]
+}

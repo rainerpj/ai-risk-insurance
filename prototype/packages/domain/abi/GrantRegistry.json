@@ -1,0 +1,1125 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "authority",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "ChannelPaused",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "GrantInactive",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "GrantInvalid",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "Unauthorized",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "channel",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "approve",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "pay",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "reason",
+        "type": "bytes32"
+      }
+    ],
+    "name": "ChannelChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "grantId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "epoch",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "budgetVersion",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "GrantChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "grantId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "channel",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "approve",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "pay",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "evidenceDigest",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RecoveryChannelEnabled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "version",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "revision",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "evidenceDigest",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RecoveryExecuted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "grantId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "version",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "epoch",
+        "type": "uint64"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "evidenceDigest",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RecoveryGrantConfigured",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "version",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "paused",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "reason",
+        "type": "bytes32"
+      }
+    ],
+    "name": "VersionPaused",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "activeTemplateGrants",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "approvalEnabled",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "insurerId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "enterpriseId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "fdeId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "productId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "workflowHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "scopeHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "riskGroupId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "templateId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ruleVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "modelVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "reviewer",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "authorizer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "channel",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint64",
+            "name": "budgetVersion",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "validFrom",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "validUntil",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "epoch",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reviewLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "enabled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct GrantRegistry.Grant",
+        "name": "g",
+        "type": "tuple"
+      }
+    ],
+    "name": "configure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "insurerId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "enterpriseId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "fdeId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "productId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "workflowHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "scopeHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "riskGroupId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "templateId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ruleVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "modelVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "reviewer",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "authorizer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "channel",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint64",
+            "name": "budgetVersion",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "validFrom",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "validUntil",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "epoch",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reviewLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "enabled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct GrantRegistry.Grant",
+        "name": "g",
+        "type": "tuple"
+      },
+      {
+        "internalType": "uint64",
+        "name": "expectedRevision",
+        "type": "uint64"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "evidenceDigest",
+        "type": "bytes32"
+      }
+    ],
+    "name": "configureRecovered",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "core",
+    "outputs": [
+      {
+        "internalType": "contract IGrantAuthority",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "disabledVersion",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bool",
+        "name": "approve",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "pay",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint64",
+        "name": "expectedRevision",
+        "type": "uint64"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "evidenceDigest",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "reason",
+        "type": "bytes32"
+      }
+    ],
+    "name": "enableRecoveredChannel",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getGrant",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "insurerId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "enterpriseId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "fdeId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "productId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "workflowHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "scopeHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "riskGroupId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "templateId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "ruleVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "modelVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "reviewer",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "authorizer",
+            "type": "address"
+          },
+          {
+            "internalType": "uint8",
+            "name": "channel",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint64",
+            "name": "budgetVersion",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "validFrom",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "validUntil",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "epoch",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reviewLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "enabled",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct GrantRegistry.Grant",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "governanceRevision",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "version",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bool",
+        "name": "paused",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "reason",
+        "type": "bytes32"
+      }
+    ],
+    "name": "pauseVersion",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "name": "paymentEnabled",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "version",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint64",
+        "name": "expectedRevision",
+        "type": "uint64"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "evidenceDigest",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "reason",
+        "type": "bytes32"
+      }
+    ],
+    "name": "recoverVersion",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "recoveredGrantEpoch",
+    "outputs": [
+      {
+        "internalType": "uint64",
+        "name": "",
+        "type": "uint64"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "recoveredGrantEvidence",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "recoveryEvidence",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "id",
+        "type": "bytes32"
+      }
+    ],
+    "name": "revoke",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "channel",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "approve",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "pay",
+        "type": "bool"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "reason",
+        "type": "bytes32"
+      }
+    ],
+    "name": "setChannel",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "quoteId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "insured",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "enterpriseId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "fdeId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "workflowHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "insurerId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "pool",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "token",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "productId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint64",
+            "name": "productVersion",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "termsHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "riskSnapshotHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "formulaVersion",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint8",
+            "name": "quoteMode",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "premium",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "annualLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "incidentLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint64",
+            "name": "startAt",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "endAt",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "expiresAt",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "signerEpoch",
+            "type": "uint64"
+          }
+        ],
+        "internalType": "struct SignatureTypes.Quote",
+        "name": "q",
+        "type": "tuple"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bytes32",
+            "name": "decisionId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "policyId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "incidentId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "noticeSetHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint64",
+            "name": "version",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "previousVersion",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "expectedLedgerHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "assessmentHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "amountsHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "netApproved",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "beneficiary",
+            "type": "address"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "reasonHash",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "reviewAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint8",
+            "name": "channel",
+            "type": "uint8"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "grantId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "uint64",
+            "name": "grantEpoch",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "budgetVersion",
+            "type": "uint64"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "reservationId",
+            "type": "bytes32"
+          },
+          {
+            "internalType": "address",
+            "name": "approver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint64",
+            "name": "signerEpoch",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "expiresAt",
+            "type": "uint64"
+          }
+        ],
+        "internalType": "struct SignatureTypes.ClaimDecision",
+        "name": "d",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "reviewer",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "payment",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "manualHold",
+        "type": "bool"
+      }
+    ],
+    "name": "validate",
+    "outputs": [],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "protocol": "FDE-EVIDENCE-v1",
+  "envelope": {
+    "canonical_manifest": "{\"event\":{\"approval_ref\":null,\"attempt_id\":\"attempt-1\",\"business_transaction_id\":null,\"captured_at\":\"2026-10-23T00:00:01Z\",\"event_id\":\"event-9007199254740993\",\"event_type\":\"action_observed\",\"occurred_at\":\"2026-10-23T00:00:00Z\",\"payload_refs\":[\"artifact\"],\"previous_digest\":null,\"received_at\":\"2026-10-23T00:00:02Z\",\"schema_version\":\"1\",\"source_id\":\"independent-monitor\",\"source_sequence\":\"9007199254740993\",\"task_id\":\"synthetic-task\",\"tenant_id\":\"synthetic-tenant\",\"version_refs\":{\"collector\":\"v1\"},\"workflow_id\":\"synthetic-workflow\"},\"objects\":[{\"byte_length\":\"30\",\"content_digest\":\"e83cada3c108631c6f93e984e746c47f4ed8ede5e2874093010a2be809720854\",\"content_type\":\"text/plain\",\"object_id\":\"artifact\"}],\"schema_version\":\"1\",\"signer\":{\"key_id\":\"collector-1\",\"signed_at\":\"2026-10-23T00:00:03Z\"}}",
+    "random_nonce": "0101010101010101010101010101010101010101010101010101010101010101",
+    "digest_algorithm": "SHA-256",
+    "commitment": "c412b43c57d179f8789a5412ace75fcb5d691e1975a8d7353e648b74642f16bd",
+    "signature_algorithm": "Ed25519",
+    "key_id": "collector-1",
+    "signature": "1d5da41ec6b269ace125d39a3347fbb8ef2263959109f99162fbd944c58b015a01673877263a457e9b82e4cab0317a3f2ce77c0160c738fb8043bfcbbf43ae0f",
+    "signed_at": "2026-10-23T00:00:03Z"
+  },
+  "proof": {
+    "batchId": "opaque-batch",
+    "index": 0,
+    "size": 3,
+    "path": [
+      "aeb6a35cf3a458f7044bdb6ec3bbe6ca572e64e8aed8a87fca09e9b744fa3905",
+      "c4bd675dc822da05a058d46dc6ba7e589bacdc5d305d6890ab30aa63ad13efcf"
+    ],
+    "root": "b245a53c408025e895857f54877a4a2656d676dc7e82b09333d2f273b39c0ad0"
+  },
+  "anchor": {
+    "batchId": "opaque-batch",
+    "root": "b245a53c408025e895857f54877a4a2656d676dc7e82b09333d2f273b39c0ad0",
+    "size": 3
+  },
+  "publicKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA11qYAYKxCrfVS/7TyWQHOg7hcvPapiMlrwIaaPcHURo=\n-----END PUBLIC KEY-----\n",
+  "originalBase64": "c3ludGhldGljIGRlcGxveW1lbnQgYXJ0aWZhY3QK",
+  "result": {
+    "manifest": "valid",
+    "originals": "valid",
+    "commitment": "valid",
+    "signature": "valid",
+    "signerAuthorization": "valid",
+    "inclusion": "valid",
+    "anchor": "valid",
+    "businessTruth": "not_checked"
+  }
+}

@@ -1,0 +1,13 @@
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {setup,H,json} from '../tests/chain-helper.ts';
+const keys:Record<string,string>={};
+const c=await setup({network:'localhost',captureKey:(name,key)=>{keys[name]=key;}});
+const q=await c.issue();
+const registry=await c.deploy('EvidenceRegistry',[c.core.address]);
+await c.send(c.core,'grantRole',[H('CLAIM_APPROVER'),c.accounts.approver2.address]);
+const dir=`.local/workbench-${c.runId}`;mkdirSync(dir,{recursive:true});
+const identities=Object.entries(c.accounts).filter(([name])=>['insured','outsider','assessor','assessor2','approver','approver2','supervisor'].includes(name)).map(([name,a])=>({address:a.address,tenant:H(name==='outsider'?'other enterprise':'enterprise'),role:name==='insured'||name==='outsider'?'insured':name.startsWith('assessor')?'ASSESSOR':name.startsWith('approver')?'CLAIM_APPROVER':'SUPERVISOR'}));
+writeFileSync(`${dir}/config.json`,json({rpc:'http://127.0.0.1:8545',core:c.core.address,registry:registry.address,deploymentId:c.salt,database:'service.sqlite',startBlock:'0',identities,accounts:Object.fromEntries(identities.map(i=>[i.address.toLowerCase(),keys[Object.entries(c.accounts).find(([,a])=>a.address===i.address)![0]]]))}));
+writeFileSync(`${dir}/public.json`,json({runId:c.runId,policy:q,identities,warning:'local generated development identities; config contains private test keys; never export config'}));
+console.log(`Local test configuration: ${dir}/config.json\nPublic fixture: ${dir}/public.json`);
+await c.connection.close();

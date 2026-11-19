@@ -1,0 +1,22 @@
+// Isolated in-memory local chain and synthetic payout, never the user's running node.
+import {writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {createServer} from 'node:net';
+import {autoFixture} from '../tests/m2b-fixture.ts';
+import {createApp,intakeMessage} from '../packages/service/api.ts';
+import {Indexer} from '../packages/service/indexer.ts';
+import {json,hash} from '../packages/service/store.ts';
+let assessorKey='';const f=await autoFixture({captureKey:(name,key)=>{if(name==='assessor')assessorKey=key;}}),{c}=f;
+const payload={noticeId:f.request.noticeId,policyId:f.q.quoteId,incidentCommitment:f.n.n.incidentCommitment,evidenceHash:f.n.n.evidenceHash,declaredIncidentAt:String(f.n.n.declaredIncidentAt),summary:'隔离结案展示：合成800测试币事故'};
+const signature=await c.accounts.insured.signMessage({message:intakeMessage(f.scope,payload)});
+f.store.run('INSERT INTO notices VALUES(?,?,?,?,?,?,NULL,?)',f.request.noticeId,f.q.enterpriseId,c.accounts.insured.address,json({payload,signature}),hash(payload),new Date().toISOString(),'awaiting_binding');
+await f.enable();const a=await f.reviewer.assess(f.request),job=await f.authorizer.authorize(f.request,a.a,a.signature),d=job.args[0] as any;
+await c.send(c.core,'registerDecision',job.args,'executor');const pay=await c.payment(f.q,d.incidentId,800000000n,{grantId:d.grantId,grantEpoch:d.grantEpoch,budgetVersion:d.budgetVersion,reservationId:d.reservationId},'approver2');
+await c.send(c.core,'executePayment',[pay.p,pay.sig],'executor');await f.enable(false,false);await c.connection.provider.request({method:'evm_mine'});
+const chain=f.makeChain('executor');await new Indexer(f.store,chain,0n).sync();
+f.store.run('INSERT INTO identities(address,tenant,role) VALUES(?,?,?)',c.accounts.assessor.address.toLowerCase(),f.q.enterpriseId,'ASSESSOR');
+const socket=createServer();await new Promise<void>(r=>socket.listen(0,'127.0.0.1',r));const port=(socket.address() as any).port;await new Promise<void>(r=>socket.close(()=>r()));
+const origin='http://127.0.0.1:'+port,app=createApp(f.store,chain,origin,{grantIds:[f.request.grantId]});await app.listen({host:'127.0.0.1',port});
+writeFileSync(resolve(f.dir,'preview-assessor-private.json'),json({privateKey:assessorKey}));
+const metadata={origin,assessor:c.accounts.assessor.address,directory:f.dir,incidentId:d.incidentId};writeFileSync(resolve(f.dir,'preview-public.json'),json(metadata));console.log(json(metadata));
+async function stop(){await app.close();f.close();await c.connection.close();process.exit(0);}process.on('SIGINT',()=>void stop());process.on('SIGTERM',()=>void stop());

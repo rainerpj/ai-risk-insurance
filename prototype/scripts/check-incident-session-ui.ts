@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {runInNewContext} from 'node:vm';
+const cache=['incident-project','incident-run','investigation-last','report-last','coverage-last','roi-last'];
+const storage=new Map(cache.map(key=>[key,'previous-account-value']));storage.set('unrelated-preference','keep');
+const elements=new Map<string,any>();const element=()=>({value:'',hidden:false,textContent:'',replaceChildren(){},append(){}});
+const get=(id:string)=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);};
+runInNewContext(readFileSync('web/incidents.js','utf8'),{document:{getElementById:get,createElement:element},sessionStorage:{getItem:(k:string)=>storage.get(k)??null,setItem:(k:string,v:string)=>storage.set(k,v),removeItem:(k:string)=>storage.delete(k)},fetch:async()=>({ok:true,json:async()=>({token:'new-account-token'})})});
+get('actor').value='new-account';get('password').value='synthetic';get('login').onsubmit({preventDefault(){}});await new Promise(setImmediate);
+for(const key of cache)assert.equal(storage.has(key),false,key);
+assert.equal(storage.get('incident-session'),'new-account-token');assert.equal(storage.get('unrelated-preference'),'keep');assert.equal(get('project').value,'');assert.equal(get('password').value,'');assert.equal(get('status').textContent,'已登录');
+console.log('PASS simulated DOM: new login clears previous investigation scope/cache and password; preserves unrelated preferences. Not browser evidence.');

@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+import { randomUUID } from 'node:crypto';
+import { emptyCoverage } from '../packages/domain/incident-coverage.ts';
+const elements=new Map<string,any>(),storage=new Map([['incident-session','synthetic-token']]);const $=(id:string)=>{if(!elements.has(id))elements.set(id,{value:'',textContent:'',checked:false});return elements.get(id);};const writes:any[]=[];
+runInNewContext(readFileSync('web/incident-coverage.js','utf8'),{document:{getElementById:$},sessionStorage:{getItem:(k:string)=>storage.get(k)??null,setItem:(k:string,v:string)=>storage.set(k,v),removeItem:(k:string)=>storage.delete(k)},crypto:{randomUUID},fetch:async(_url:string,options:any)=>{if(options.method==='PUT')writes.push(JSON.parse(options.body));return {ok:true,json:async()=>({current:{version:1,coverage:{...emptyCoverage(),mode:'proposed',confirmationEvidence:['import-one/object-one','import-two/object-two']}},history:[]})};},setTimeout,URL});
+$('project').value='project';$('incident').value='incident';$('load').onsubmit({preventDefault(){}});await new Promise(setImmediate);
+assert.equal($('confirmationEvidence').value,'import-one/object-one\nimport-two/object-two');$('register').onsubmit({preventDefault(){}});await new Promise(setImmediate);
+assert.deepEqual(writes[0].coverage.confirmationEvidence,['import-one/object-one','import-two/object-two']);assert.equal(writes[0].expectedVersion,1);assert.equal(writes[0].coverage.annualLimit,null);
+$('incident').value='other';$('incident').oninput();assert.equal($('history').textContent,'');assert.equal($('confirmationEvidence').value,'');assert.equal($('disclosure').checked,false);
+console.log('PASS synthetic DOM logic: multiline reference load/save, null preservation, scope clearing. Not a browser test.');

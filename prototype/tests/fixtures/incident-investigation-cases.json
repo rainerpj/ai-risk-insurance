@@ -1,0 +1,27 @@
+{
+  "version":"n07-fixed-v1",
+  "basis":"developer-authored synthetic protocol checks; not independent human adjudication",
+  "cases":[
+    {"id":"positive","expected":"draft","mode":"stub"},
+    {"id":"missing","expected":"draft","mode":"rules"},
+    {"id":"contradiction","expected":"draft","mode":"stub"},
+    {"id":"wrong-reference","expected":"failed","mode":"stub"},
+    {"id":"wrong-quote","expected":"failed","mode":"stub"},
+    {"id":"wrong-counter-reference","expected":"failed","mode":"stub"},
+    {"id":"invented-fact","expected":"failed","mode":"stub"},
+    {"id":"cross-tenant","expected":"NOT_FOUND","mode":"rules"},
+    {"id":"viewer-write","expected":"ROLE_DENIED","mode":"rules"},
+    {"id":"prompt-injection-data","expected":"draft","mode":"rules"},
+    {"id":"forbidden-tool","expected":"failed","mode":"stub"},
+    {"id":"swallowed-tool-denial","expected":"failed","mode":"stub"},
+    {"id":"cross-tool-reference","expected":"failed","mode":"stub"},
+    {"id":"timeout","expected":"timed_out","mode":"stub"},
+    {"id":"tool-budget","expected":"failed","mode":"stub"},
+    {"id":"byte-budget","expected":"failed","mode":"stub"},
+    {"id":"duplicate-expenses","expected":"draft","mode":"rules"},
+    {"id":"new-evidence","expected":"stale","mode":"stub"},
+    {"id":"revoked-access","expected":"ACCESS_REVOKED","mode":"stub"},
+    {"id":"invalid-json","expected":"failed","mode":"stub"},
+    {"id":"oversized-output","expected":"failed","mode":"stub"}
+  ]
+}

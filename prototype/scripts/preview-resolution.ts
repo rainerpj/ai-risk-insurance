@@ -1,0 +1,23 @@
+// Synthetic independent supervisor resolution fixture. No payment or live model calls.
+import {writeFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {autoFixture} from '../tests/m2b-fixture.ts';
+import {createApp} from '../packages/service/api.ts';
+import {recordQuality,qualityCases} from '../packages/service/quality.ts';
+import {Indexer} from '../packages/service/indexer.ts';
+import {json} from '../packages/service/store.ts';
+import {id,U} from '../tests/chain-helper.ts';
+import type {Hex} from 'viem';
+const keys:Record<string,string>={},f=await autoFixture({network:'localhost',captureKey:(name,key)=>{keys[name]=key;}}),chain=f.makeChain('executor');
+const decision=await f.c.decision(f.q,[f.request.noticeId as Hex],id(),800n*U);await f.c.send(f.c.core,'registerDecision',decision.args,'executor');
+const actor={address:f.c.accounts.assessor2.address.toLowerCase(),tenant:f.q.enterpriseId,role:'ASSESSOR'};
+await recordQuality(f.store,chain,actor,{id:id(),incidentId:decision.d.incidentId,decisionVersion:'1',outcome:'underpayment',reason:'合成异常提示，需独立复核。'});
+const reviewId=id();await recordQuality(f.store,chain,actor,{id:reviewId,incidentId:decision.d.incidentId,decisionVersion:'1',outcome:'correct',reason:'合成独立复核：原批准金额无误，正常待付不构成少付。'});
+const deployment=(f.c.records as {action:string;receipt:{blockNumber:bigint}}[]).find(r=>r.action==='deploy InsuranceCore')!;
+await f.c.connection.provider.request({method:'evm_mine'});await new Indexer(f.store,chain,deployment.receipt.blockNumber).sync();
+const supervisor=f.c.accounts.supervisor.address.toLowerCase();f.store.run('INSERT INTO identities(address,tenant,role) VALUES(?,?,?)',supervisor,actor.tenant,'SUPERVISOR');
+const {createServer}=await import('node:net'),socket=createServer();await new Promise<void>(r=>socket.listen(0,'127.0.0.1',r));const port=(socket.address() as any).port;await new Promise<void>(r=>socket.close(()=>r()));
+const origin='http://127.0.0.1:'+port,app=createApp(f.store,chain,origin);await app.listen({host:'127.0.0.1',port});
+writeFileSync(resolve(f.dir,'preview-supervisor-private.json'),json({privateKey:keys.supervisor}));
+const metadata={origin,supervisor,reviewId,caseId:(await qualityCases(f.store,chain,actor.tenant))[0].id,incidentId:decision.d.incidentId,directory:f.dir};writeFileSync(resolve(f.dir,'preview-public.json'),json(metadata));console.log(json(metadata));
+async function stop(){await app.close();f.close();await f.c.connection.close();process.exit(0);}process.on('SIGINT',()=>void stop());process.on('SIGTERM',()=>void stop());

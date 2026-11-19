@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/incident-investigations.css"><title>报告复核与受控导出</title></head><body><nav><a href="/coverage">保障引用与承保交接</a></nav>
+<h1>报告复核与受控导出</h1><p>独立复核针对明确的报告版本和证据快照，不等于事实认证、保险批准或付款授权。新材料会使旧复核和下载失效。</p>
+<a href="/incidents">登录 / 切换账号</a><a href="/investigations">调查草稿</a><button id="logout">退出</button><p id="status" role="status"></p>
+<form id="list"><label>项目 <input id="project" required></label><label>事故编号 <input id="incident" required></label><button>读取版本列表</button></form><div id="versions"></div>
+<form id="publish"><h2>将当前草稿冻结为新报告版本</h2><label>调查草稿编号 <input id="investigation" required></label><label>当前最新版本（首次为0） <input id="expected" type="number" min="0" value="0" required></label><button>冻结新版本</button></form>
+<form id="read"><label>报告编号 <input id="report-id" required></label><button>读取 / 刷新有效状态</button></form><article id="report"></article>
+<form id="retrieve"><label>收到的索引包编号 <input id="received-export" required></label><button>准备鉴权下载</button></form>
+<form id="review" hidden><h2>独立复核</h2><p>仅reviewer角色可复核，报告作者、原草稿作者及费用贡献者不能自审。提交时重新核对版本和证据。</p><label>决定 <select id="decision"><option value="changes_requested">要求修改</option><option value="accepted">接受本版报告</option></select></label><p><label>复核理由 <textarea id="reason" required></textarea></label></p><button>记录复核决定</button></form>
+<form id="export" hidden><h2>受控脱敏索引包</h2><p>仅管理员可创建，指定项目内接收账号；10分钟有效，每次下载重新鉴权。包不含自由文本、原件正文、个人标识或金额明细；可核对清单摘要和引用结构，不能仅靠此包验证原件字节。</p><label>接收账号 <input id="audience" required></label><button>创建脱敏索引包</button></form>
+<section id="download-area" hidden><p id="export-info"></p><button id="download">鉴权并下载JSON</button><form id="revoke"><label>撤销原因 <input id="revoke-reason" required></label><button>撤销后续下载</button></form><p>已下载到本机的文件无法远程召回。</p></section>
+<script src="/incident-reports.js" defer></script></body></html>
+

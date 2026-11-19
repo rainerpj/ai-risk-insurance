@@ -1,0 +1,17 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>事故费用核算</title></head><body>
+<h1>事故费用核算</h1><p>实际净损失与拟纳入保障金额分开。金额按货币主单位填写，未知请留空；有发票不等于已支付。人工确认仅记录核对声明。</p><a href="/incidents">登录 / 返回时间线</a> <button id="logout">退出</button><p id="status" role="status"></p>
+<form id="load"><label>项目 <input id="project" required></label><button>加载事故</button></form>
+<div id="incidents"></div><h2 id="selected">请选择事故</h2><div id="summary"></div>
+<form id="expense" hidden><h2>追加费用版本</h2><p id="version"></p>
+<label>费用编号 <input id="expense-id" required></label> <button id="new" type="button">新明细</button>
+<p><label>类别 <select id="category"><option value="restoration">恢复费用</option><option value="emergency">应急费用</option><option value="other">其他（不映射旧条款）</option></select></label>
+<label>币种 <input id="currency" value="CNY" required></label> <label>小数位 <input id="scale" type="number" min="0" max="18" value="2" required></label></p>
+<p><label>发票 / 凭证唯一标识（含开具方） <input id="voucher" required></label></p>
+<p><label>费用总额 <input id="gross" inputmode="decimal"></label> <label>实际支付 <input id="paid" inputmode="decimal"></label> <label>重复计入部分 <input id="duplicate" inputmode="decimal"></label></p>
+<p><label>其他补偿 <input id="compensation" inputmode="decimal"></label> <label>已追回 <input id="recovery" inputmode="decimal"></label></p>
+<p>每类可选择多份凭据；按住 Ctrl 可增选或取消。未选择表示未提供，历史不可用引用需显式处理。</p><p><label>费用凭证 <select id="invoice-ref" multiple size="4"></select></label> <label>支付凭证 <select id="payment-ref" multiple size="4"></select></label></p>
+<p><label>补偿凭证 <select id="compensation-ref" multiple size="4"></select></label> <label>追回凭证 <select id="recovery-ref" multiple size="4"></select></label></p>
+<label>核对状态 <select id="verification"><option value="pending">待核对</option><option value="confirmed">已人工核对（声明）</option></select></label>
+<p><label>核对依据 / 更正原因 <textarea id="reason" required></textarea></label></p><button id="save">保存新版本并核算</button></form>
+<details id="mapping" hidden><summary>本地测试条款试算（不生成赔案或付款）</summary><form id="terms"><label>条款版本 <input id="terms-version" required></label><label>免赔 <input id="deductible" required></label><label>比例分子 <input id="numerator" required></label><label>比例分母 <input id="denominator" required></label><label>单次限额 <input id="limit" required></label><label>年度剩余 <input id="remaining" required></label><p>币种和小数位取当前费用表单。结果仅为本地测试拟议金额。</p><button>试算</button></form><p id="coverage"></p></details>
+<script src="/incident-expenses.js" defer></script></body></html>

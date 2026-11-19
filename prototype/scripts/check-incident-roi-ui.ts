@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { runInNewContext } from 'node:vm';
+import { randomUUID } from 'node:crypto';
+import { roiFixture } from '../tests/incident-roi-fixture.ts';
+import { parseRoi,calculateRoi } from '../packages/domain/incident-roi.ts';
+const elements=new Map<string,any>(),storage=new Map([['incident-session','synthetic-token']]);
+const create=()=>({value:'',textContent:'',checked:false,style:{},children:[] as any[],append(...items:any[]){this.children.push(...items);},replaceChildren(...items:any[]){this.children=items;}});
+const $=(id:string)=>{if(!elements.has(id))elements.set(id,create());return elements.get(id);};const writes:any[]=[];const input=roiFixture();input.groups[0]!.scenarios[0]!.lines[0]!.sourceRefs=['import-one/object-one','import-two/object-two'];
+runInNewContext(readFileSync('web/incident-roi.js','utf8'),{document:{getElementById:$,createElement:create},sessionStorage:{getItem:(k:string)=>storage.get(k)??null,setItem:(k:string,v:string)=>storage.set(k,v),removeItem:(k:string)=>storage.delete(k)},crypto:{randomUUID},structuredClone,fetch:async(_url:string,options:any)=>{if(options.method==='PUT')writes.push(JSON.parse(options.body));return {ok:true,json:async()=>({periods:[{period:'2026-11',version:1,input,calculation:calculateRoi(input)}],history:[]})};},setTimeout});
+$('project').value='project';$('workflow').value='workflow';$('period').value='2026-11';$('load').onsubmit({preventDefault(){}});await new Promise(setImmediate);
+assert.ok($('editor').children.length>0);$('save').onsubmit({preventDefault(){}});await new Promise(setImmediate);assert.equal(writes[0].expectedVersion,1);parseRoi(writes[0].input);assert.deepEqual(writes[0].input.groups[0].scenarios[0].lines[0].sourceRefs,['import-one/object-one','import-two/object-two']);$('workflow').oninput();assert.equal($('editor').children.length,0);assert.equal($('results').children.length,0);
+console.log('PASS synthetic DOM: three-scenario render/save, source references, version, strict schema and scope clearing. Not a browser test.');

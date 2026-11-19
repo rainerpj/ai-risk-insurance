@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/incident-investigations.css"><title>保障引用与承保交接</title></head><body><nav><a href="/test-claims">本地测试币桥接</a></nav><nav><a href="/roi">企业ROI与平台单位经济</a></nav>
+<h1>保障引用与承保交接</h1><nav><a href="/incidents">登录 / 切换账号</a> <a href="/reports">报告复核与接收账号设置</a> <button id="logout">退出</button></nav>
+<p>这里登记保障资料并准备人工交接包。外部已确认仅表示管理员已登记确认凭据，不表示系统核实承保有效、事故在责任范围内或可以付款。本地测试不产生真实保单。</p><p id="status" role="status"></p>
+<form id="load"><label>项目 <input id="project" required></label><label>事故编号 <input id="incident" required></label><button>读取登记和历史</button></form><pre id="current"></pre>
+<form id="register"><h2>追加保障版本（企业管理员）</h2><p>先读取当前版本。未知字段留空；金额为最小货币单位整数，0表示已知为零。变更后原报告及交接下载需重新复核。</p>
+<label>状态 <select id="mode"><option value="none">无保障登记（none）</option><option value="proposed">拟议（proposed）</option><option value="confirmed_external">外部已确认凭据登记（confirmed_external）</option><option value="local_test">本地测试（local_test）</option></select></label>
+<label>保险方 <input id="insurerParty"></label><label>保单引用 <input id="policyRef"></label><label>条款版本 <input id="termsVersion"></label><label>币种 <input id="currency" maxlength="12"></label><label>小数位 <input id="scale" type="number" min="0" max="18"></label><label>免赔额 <input id="deductible" inputmode="numeric"></label><label>分担比例分子 <input id="numerator" inputmode="numeric"></label><label>分担比例分母 <input id="denominator" inputmode="numeric"></label><label>单次限额 <input id="incidentLimit" inputmode="numeric"></label><label>年度限额 <input id="annualLimit" inputmode="numeric"></label><label>除外责任引用 <input id="exclusionsRef"></label><label>确认凭据（每行 importId/objectId，来自本事故导入原件）<textarea id="confirmationEvidence"></textarea></label><button>保存新版本</button></form>
+<h2>登记历史</h2><pre id="history"></pre>
+<form id="handoff"><h2>准备承保交接包</h2><p>先登记保障，再生成/复核报告；在报告页创建指定接收账号的索引包。这里沿用该包10分钟期限及撤销状态。无保障也可交接。</p><label>报告索引包编号 <input id="exportId" required></label><label><input id="disclosure" type="checkbox" required> 我确认向该索引包的创建者和指定接收账号披露保障字段及确认凭据引用；这是含业务信息的保密包，未向保险方发送。</label><button>生成交接包编号</button></form>
+<form id="download"><label>交接包编号 <input id="handoffId" required></label><button>鉴权并下载JSON</button></form><p>管理员可在报告页使用索引包编号撤销后续下载。已下载文件无法召回。</p>
+<h2>职责与人工交接</h2><dl><dt>企业</dt><dd>提供工作流授权、业务材料及保障资料；明确接收账号和披露范围，核对登记内容。</dd><dt>FDE服务方</dt><dd>在企业委托范围提供执行记录与技术说明，不代替保险方的承保和核赔决定。</dd><dt>保险方</dt><dd>通过人工渠道核对确认凭据、条款、责任范围和补件要求；本系统未连接保险公司API。</dd><dt>平台</dt><dd>保留版本、证据索引和访问审计，不替代事实认证、承保批准或付款授权。</dd></dl><p>交接包包含保障版本和脱敏报告索引，不含完整报告正文与原件；接收方须另行取得获准材料并人工确认，下载不等于送达或承保接受。</p>
+<script src="/incident-coverage.js" defer></script></body></html>
+
+
+
